@@ -20,3 +20,5 @@ substitutions:
   _REGION: asia-south1
   _PROJECT_ID: mlops-test-443704
   _REPOSITORY_NAME: mlops
+options:
+  logging: NONE
