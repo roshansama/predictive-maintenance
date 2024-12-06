@@ -142,4 +142,4 @@ if st.button("Predict"):
     except Exception as e:
         st.error(f"Error in prediction: {e}")
 
-        ## hey there im noob
+        ## hey there im noob bot
