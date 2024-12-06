@@ -1,0 +1,22 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'asia-south1-docker.pkg.dev/mlops-test-443704/mlops/predictive-maintenance:$COMMIT_SHA', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'asia-south1-docker.pkg.dev/mlops-test-443704/mlops/predictive-maintenance:$COMMIT_SHA']
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args: [
+    'run',
+    'deploy',
+    'predictive-maintenance-service',
+    '--image',
+    'asia-south1-docker.pkg.dev/mlops-test-443704/mlops/predictive-maintenance:$COMMIT_SHA',
+    '--platform',
+    'managed',
+    '--region',
+    '[REGION]',
+    '--allow-unauthenticated'
+  ]
+substitutions:
+  _REGION: asia-south1
+  _PROJECT_ID: mlops-test-443704
+  _REPOSITORY_NAME: mlops
