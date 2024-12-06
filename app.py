@@ -141,3 +141,5 @@ if st.button("Predict"):
                 st.write(f"**Suggested Remedies**:\n{remedy}")
     except Exception as e:
         st.error(f"Error in prediction: {e}")
+
+        ## hey there
