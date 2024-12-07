@@ -39,5 +39,5 @@ substitutions:
   _REPOSITORY_NAME: mlops
 
 options:
-  logging: NONE
+  logging: CLOUD_LOGGING_ONLY
   substitution_option: ALLOW_LOOSE
