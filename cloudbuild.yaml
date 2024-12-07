@@ -13,7 +13,7 @@ steps:
     '--platform',
     'managed',
     '--region',
-    '[REGION]',
+    'asia-east1',
     '--allow-unauthenticated'
   ]
 substitutions:
