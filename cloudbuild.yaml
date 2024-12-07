@@ -4,20 +4,20 @@ steps:
     args:
       - 'build'
       - '-t'
-      - 'asia-east1-docker.pkg.dev/mlops-test-443704/mlops/predictive-maintenance:$COMMIT_SHA'
+      - '$_REGION-docker.pkg.dev/$_PROJECT_ID/$_REPOSITORY_NAME/predictive-maintenance:$COMMIT_SHA'
       - '-t'
-      - 'asia-east1-docker.pkg.dev/mlops-test-443704/mlops/predictive-maintenance:latest'
+      - '$_REGION-docker.pkg.dev/$_PROJECT_ID/$_REPOSITORY_NAME/predictive-maintenance:latest'
       - '.'
 
   # Step 2: Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'asia-east1-docker.pkg.dev/mlops-test-443704/mlops/predictive-maintenance:$COMMIT_SHA'
+      - '$_REGION-docker.pkg.dev/$_PROJECT_ID/$_REPOSITORY_NAME/predictive-maintenance:$COMMIT_SHA'
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'asia-east1-docker.pkg.dev/mlops-test-443704/mlops/predictive-maintenance:latest'
+      - '$_REGION-docker.pkg.dev/$_PROJECT_ID/$_REPOSITORY_NAME/predictive-maintenance:latest'
 
   # Step 3: Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -26,11 +26,11 @@ steps:
       - 'deploy'
       - 'predictive-maintenance-service'
       - '--image'
-      - 'asia-east1-docker.pkg.dev/mlops-test-443704/mlops/predictive-maintenance:$COMMIT_SHA'
+      - '$_REGION-docker.pkg.dev/$_PROJECT_ID/$_REPOSITORY_NAME/predictive-maintenance:$COMMIT_SHA'
       - '--platform'
       - 'managed'
       - '--region'
-      - 'asia-east1'
+      - '$_REGION'
       - '--allow-unauthenticated'
 
 substitutions:
