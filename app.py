@@ -16,7 +16,7 @@ with open("scaler.pkl", "rb") as f:
 features = ["Rotational speed [rpm]", "Torque [Nm]", "Tool wear [min]", "TWF", "HDF", "PWF", "OSF"]
 
 # App title and description
-st.title("Predictive Maintenance for Industrial Equipment test 2")
+st.title("Predictive Maintenance for Industrial Equipment test")
 st.write("This application predicts equipment failures based on user-provided inputs.")
 
 # Sidebar inputs (RAW values)
