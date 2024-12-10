@@ -16,3 +16,4 @@ pydantic==2.10.2
 pytz>=2024.1
 scikit-learn>=0.24
 streamlit>=1.20
+shap>=0.41.0
