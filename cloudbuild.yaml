@@ -1,3 +1,6 @@
+options:
+  logging: CLOUD_LOGGING_ONLY  # Fixes the Cloud Build logging issue
+
 steps:
   # Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
@@ -14,6 +17,7 @@ steps:
     args:
       - 'push'
       - 'asia-east1-docker.pkg.dev/predictive-maintenance-448107/mlops/predictive-maintenance:$COMMIT_SHA'
+
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
