@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import joblib
+import mlflow
+import mlflow.sklearn
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
@@ -42,33 +44,44 @@ models = {
     "XGBoost": XGBClassifier(use_label_encoder=False, eval_metric='logloss')
 }
 
-# **Step 6: Train & Evaluate Models**
+# **Step 6: Train & Log Models in MLflow**
+mlflow.set_experiment("Predictive Maintenance Models")
+
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 best_model = None
 best_accuracy = 0
 
 for name, model in models.items():
-    print(f"🔹 Training {name}...")
+    with mlflow.start_run(run_name=name):  # Start MLflow run for each model
+        print(f"🔹 Training {name}...")
 
-    pipeline = Pipeline([
-        ("preprocessor", preprocessor),
-        ("model", model)
-    ])
+        pipeline = Pipeline([
+            ("preprocessor", preprocessor),
+            ("model", model)
+        ])
 
-    pipeline.fit(X_train, y_train)
-    y_pred = pipeline.predict(X_test)
-    acc = accuracy_score(y_test, y_pred)
+        pipeline.fit(X_train, y_train)
+        y_pred = pipeline.predict(X_test)
+        acc = accuracy_score(y_test, y_pred)
 
-    print(f"✅ {name} Accuracy: {acc:.4f}")
-    print(classification_report(y_test, y_pred))
+        # **Log Metrics & Parameters**
+        mlflow.log_param("Model Type", name)
+        mlflow.log_metric("Accuracy", acc)
+        mlflow.log_artifact("synthetic_data.csv")  # Log dataset
 
-    if acc > best_accuracy:
-        best_accuracy = acc
-        best_model = pipeline
-        best_model_name = name
+        # **Save Model to MLflow**
+        mlflow.sklearn.log_model(pipeline, name)
 
-# **Step 7: Save Best Model**
+        print(f"✅ {name} Accuracy: {acc:.4f}")
+        print(classification_report(y_test, y_pred))
+
+        if acc > best_accuracy:
+            best_accuracy = acc
+            best_model = pipeline
+            best_model_name = name
+
+# **Step 7: Save Best Model Locally**
 if best_model:
     joblib.dump(best_model, f"best_model_{best_model_name}.pkl")
     print(f"🚀 Best Model ({best_model_name}) Saved as best_model_{best_model_name}.pkl")
