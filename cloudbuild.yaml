@@ -1,18 +1,20 @@
 options:
-  logging: CLOUD_LOGGING_ONLY  # Fixes the Cloud Build logging issue
+  logging: CLOUD_LOGGING_ONLY  # Ensures Cloud Build logs are stored properly
 
 steps:
-  # Build the Docker image
+  # 🔹 Step 1: Build the Docker image using dockerfile_fastapi
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
+      - '-f'
+      - 'dockerfile_fastapi'  # Use the correct Dockerfile name
       - '-t'
       - 'asia-east1-docker.pkg.dev/predictive-maintenance-448107/mlops/predictive-maintenance:$COMMIT_SHA'
       - '-t'
       - 'asia-east1-docker.pkg.dev/predictive-maintenance-448107/mlops/predictive-maintenance:latest'
       - '.'
 
-  # Push the Docker image to Artifact Registry
+  # 🔹 Step 2: Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
@@ -23,13 +25,13 @@ steps:
       - 'push'
       - 'asia-east1-docker.pkg.dev/predictive-maintenance-448107/mlops/predictive-maintenance:latest'
 
-  # Deploy to Cloud Run
+  # 🔹 Step 3: Deploy the container to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
     args:
       - 'run'
       - 'deploy'
-      - 'predictive-maintenance-service'
+      - 'predictive-maintenance-service'  # Cloud Run service name
       - '--image'
       - 'asia-east1-docker.pkg.dev/predictive-maintenance-448107/mlops/predictive-maintenance:$COMMIT_SHA'
       - '--platform'
