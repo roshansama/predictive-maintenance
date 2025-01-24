@@ -2,7 +2,7 @@
 anyio==4.6.2.post1
 asttokens==2.4.1
 debugpy==1.8.2
-fastapi==0.115.5
+fastapi==0.95.0
 h11==0.14.0
 ipykernel==6.29.5
 ipython==8.26.0
