@@ -6,6 +6,10 @@ import numpy as np
 import joblib
 import os
 from io import StringIO
+import uvicorn
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8080)
 
 # **Step 1: Automatically Find the Best Model**
 def find_latest_model():

@@ -44,5 +44,4 @@ steps:
       - '--region'
       - '$_REGION'
       - '--allow-unauthenticated'
-      - '--port'
-      - '8080' 
+      - '--port=8080'
