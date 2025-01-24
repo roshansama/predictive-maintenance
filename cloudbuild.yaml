@@ -1,46 +1,46 @@
 options:
-  logging: CLOUD_LOGGING_ONLY  # Ensures Cloud Build logs are stored properly
-
-steps:
-  # 🔹 Step 1: Build the Docker image using dockerfile_fastapi
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'build'
-      - '-f'
-      - 'dockerfile_fastapi'  # Use the correct Dockerfile name
-      - '-t'
-      - 'asia-east1-docker.pkg.dev/predictive-maintenance-448107/mlops/predictive-maintenance:$COMMIT_SHA'
-      - '-t'
-      - 'asia-east1-docker.pkg.dev/predictive-maintenance-448107/mlops/predictive-maintenance:latest'
-      - '.'
-
-  # 🔹 Step 2: Push the Docker image to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'asia-east1-docker.pkg.dev/predictive-maintenance-448107/mlops/predictive-maintenance:$COMMIT_SHA'
-
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'asia-east1-docker.pkg.dev/predictive-maintenance-448107/mlops/predictive-maintenance:latest'
-
-  # 🔹 Step 3: Deploy the container to Cloud Run
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: 'gcloud'
-    args:
-      - 'run'
-      - 'deploy'
-      - 'predictive-maintenance-service'  # Cloud Run service name
-      - '--image'
-      - 'asia-east1-docker.pkg.dev/predictive-maintenance-448107/mlops/predictive-maintenance:$COMMIT_SHA'
-      - '--platform'
-      - 'managed'
-      - '--region'
-      - 'asia-east1'
-      - '--allow-unauthenticated'
+  logging: CLOUD_LOGGING_ONLY  # Fixes Cloud Build logging issue
 
 substitutions:
   _REGION: asia-east1
   _PROJECT_ID: predictive-maintenance-448107
   _REPOSITORY_NAME: mlops
+
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-f'
+      - 'dockerfile_fastapi'  # Ensure this matches your actual Dockerfile name
+      - '-t'
+      - '$_REGION-docker.pkg.dev/$_PROJECT_ID/$_REPOSITORY_NAME/predictive-maintenance:$COMMIT_SHA'
+      - '-t'
+      - '$_REGION-docker.pkg.dev/$_PROJECT_ID/$_REPOSITORY_NAME/predictive-maintenance:latest'
+      - '.'
+
+  # Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '$_REGION-docker.pkg.dev/$_PROJECT_ID/$_REPOSITORY_NAME/predictive-maintenance:$COMMIT_SHA'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '$_REGION-docker.pkg.dev/$_PROJECT_ID/$_REPOSITORY_NAME/predictive-maintenance:latest'
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'predictive-maintenance-service'
+      - '--image'
+      - '$_REGION-docker.pkg.dev/$_PROJECT_ID/$_REPOSITORY_NAME/predictive-maintenance:$COMMIT_SHA'
+      - '--platform'
+      - 'managed'
+      - '--region'
+      - '$_REGION'
+      - '--allow-unauthenticated'
